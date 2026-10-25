@@ -1,50 +1,44 @@
 # Responsibilities
 
-## What this repository is
+App Template is the starting point for a new Next.js application. A repository created with GitHub's **Use this template** is a separate application. Later commits here do not change it.
 
-App-Template is the starting point for a new application.
+## What this repository owns
 
-It provides a Next.js project, a generic first page, base styling, typed public configuration, development checks, continuous integration, and a static-file deployment workflow.
-
-A repository created with GitHub's **Use this template** is a separate application. It keeps the dependencies and workflows it was given. Later changes to App-Template do not flow into it.
-
-## What this repository is not
-
-- The implementation of reusable framework modules.
-- A library of optional business capabilities.
-- A package registry or a dependency-upgrade service.
-- A production product with its own business logic.
-- A process that updates applications created earlier.
-
-## What belongs here
-
-- The application entry point, routes, and the global stylesheet.
+- The Next.js application, routes, landing page, and page layout.
+- Default stack pins, `pnpm check`, and this repository's continuous integration.
 - This application's configuration values and the call into `@app-framework/app-config`.
-- The `dev` script that calls `framework-check`.
-- Editor guidance, the README, and these documents.
-- The GitHub Actions workflows that validate this starter and deploy a generated application.
+- The current static deploy workflow, until App Framework's tag `deploy-static-v1` exists. The caller to switch to is in App Framework's consumer contract. This file does not point at that tag before the tag exists.
+- Starter-only guidance in `AGENTS.md` and `.cursor/rules/architecture.mdc`.
+- A pinned copy of App Framework's shared Cursor standards.
 
-## What belongs in App-Framework
+## What this repository does not own
 
-Reusable behaviour that more than one application needs: shared contracts, published packages, and the capability catalogue.
+- The implementation of `@app-framework/app-config`, `@app-framework/dev-tools`, or `@app-framework/ui`.
+- The canonical Cursor standards. Those live in App Framework at `standards/cursor`. This repository commits the synced copy and does not edit those rules in place.
+- The reusable deploy implementation. That lives in App Framework at `.github/workflows/deploy-static.yml`.
+- A second catalogue. The catalogue is App Framework's [reusable patterns catalogue](https://github.com/daniel-clain/App-Framework/blob/main/REUSABLE_PATTERNS_CATALOGUE.md).
+- Product behaviour for one generated application. That belongs in the generated repository, including any extra `.cursor/rules` files.
 
-Today that includes `@app-framework/app-config` and `@app-framework/dev-tools`. Their public API is [the consumer contract](https://github.com/daniel-clain/App-Framework/blob/main/docs/consumer-contract.md). The catalogue is [docs/capability-catalogue.md](https://github.com/daniel-clain/App-Framework/blob/main/docs/capability-catalogue.md).
+## How a new application starts
 
-App-Framework must not depend on this repository. This repository must not copy those packages into its own source.
+1. On GitHub, enable **Template repository** by hand, then use **Use this template**.
+2. Read the catalogue. Install a framework package only when a registry release exists and the product needs it. Do not generate a module for a pattern that is not released.
+3. A future setup wizard may record those choices. It is not implemented, and it must not pretend a deferred capability is installed.
 
-A shared UI package is not published. Building one, if more than one application needs it, is an App-Framework change. This template does not keep a local component library in its place.
+## How an existing application adopts a change
 
-## What belongs in an application
+There is no second update system. `framework-check` reports package versions and does not edit files.
 
-Features, data, and workflows that exist for that product alone. The generated repository is where those changes go. It can add or remove framework packages as its requirements change. A version change is a commit in that repository, not a side effect of publishing the template or a framework package.
+- Framework packages: after a real publish, bump the range and lockfile in the application.
+- Cursor standards: from a checkout of App Framework, run `node scripts/sync-cursor-standards.mjs --target <application>` and commit `.cursor/rules/framework/` plus `.cursor/framework-standards.json`.
+- Static deploy: after `deploy-static-v1` exists, point the caller at that tag. A breaking change uses `deploy-static-v2` and a migration note.
+- Structural starter changes: follow a written migration. Creating an application from this template does not subscribe it to later template commits.
 
-## How applications use framework packages
+## Manual steps that remain
 
-Install the published versions with pnpm and a normal semver range. Import the package root only. Do not point the application at the App-Framework git repository.
-
-```bash
-pnpm add @app-framework/app-config
-pnpm add -D @app-framework/dev-tools
-```
-
-Call `framework-check` to see whether a newer stable version exists. It reports the difference and does not install it.
+- Confirm the npm scope `@app-framework` in npm's UI before any publish. `scopeConfirmed` stays false. A registry 404 on 26 October 2026 does not prove the scope is free or owned.
+- Do not add `@app-framework/ui` until `npm view @app-framework/ui` resolves. This starter also cannot install `@app-framework/app-config` or `@app-framework/dev-tools` until those names resolve, so there is no lockfile yet.
+- Push App Framework's deploy workflow to its default branch and create the tag `deploy-static-v1`.
+- For a private App Framework repository, allow repositories owned by `daniel-clain` to call its Actions workflows.
+- Set `VPS_HOST`, `VPS_USER`, `VPS_SSH_KEY`, and `VPS_KNOWN_HOSTS` on the application.
+- Prepare the server as described in the README. The workflow does not create users, install a web server, or obtain a certificate.

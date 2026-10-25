@@ -51,7 +51,7 @@ framework-check
 
 A registry timeout or network failure prints one warning and exits 0, so `pnpm dev` still starts Next.js. The command never edits `package.json` or the lockfile. Install an upgrade only by changing the version in this application.
 
-There is no shared UI package yet. The landing page is ordinary HTML and `src/app/globals.css`.
+`@app-framework/ui` is the shared interface package. It is not installed in this starter while it is unpublished. The landing page is ordinary HTML and `src/app/globals.css`.
 
 The packages stay unpublished while App-Framework's npm scope is unconfirmed. Until `pnpm install` can resolve them, do not invent a local substitute. This repository has no lockfile until that install succeeds. After the first successful install, commit `pnpm-lock.yaml`. Continuous integration uses `pnpm install --frozen-lockfile` and cannot pass before that file exists.
 
@@ -67,7 +67,16 @@ Pushing to `main` in `daniel-clain/App-Template` runs validation only. The deplo
 
 ## Deploy
 
-A generated application deploys on every push to `main`. The workflow installs from the lockfile, runs `pnpm check`, and uploads the static `out/` directory.
+A generated application deploys on every push to `main`. This repository still runs [`.github/workflows/deploy.yml`](.github/workflows/deploy.yml). That file installs from the lockfile, runs `pnpm check`, and uploads the static `out/` directory.
+
+App Framework's reusable workflow is `.github/workflows/deploy-static.yml`. Callers are meant to pin `deploy-static-v1` and pass the Next.js profile (`.nvmrc`, `pnpm install --frozen-lockfile`, `pnpm check`, `out`, `index.html`), `rollback`, and the four secrets. This repository does not use that caller yet. GitHub cannot resolve the tag until the workflow file is on App Framework's default branch and the tag exists. The exact caller is in App Framework's consumer contract.
+
+These steps are still manual:
+
+- Push the workflow and create the tag `deploy-static-v1`.
+- If App Framework is private, allow repositories owned by `daniel-clain` to call its Actions workflows.
+- Confirm the npm scope before any package publish.
+- Set the four deployment secrets below, and complete the one-time server setup.
 
 The remote layout is:
 
@@ -92,6 +101,20 @@ Do this by hand on the Ubuntu server before the first deploy. The workflow will 
 - Create `/root/apps` and give that user write access to it.
 - Store one verified `known_hosts` line in `VPS_KNOWN_HOSTS`. `ssh-keyscan -H <host>` can produce it. The workflow does not scan the host itself.
 
-## Deferred
+## Standards
 
-Shared UI components, design tokens, databases, identity, payments, realtime behaviour, observability, and web serving are not part of this starter. A missing shared capability belongs in App-Framework rather than as a second copy here.
+Shared Cursor rules are copied from App Framework `standards/cursor` at version `1.0.0`. The pin is [`.cursor/framework-standards.json`](.cursor/framework-standards.json). The rules are in `.cursor/rules/framework/`. Starter-only guidance stays in `AGENTS.md` and `.cursor/rules/architecture.mdc`. A generated application can add its own rules beside that copy.
+
+To take a later version, check out App Framework and run:
+
+```bash
+node scripts/sync-cursor-standards.mjs --target <this-repository>
+```
+
+Commit the updated rules and pin. This template does not update applications created from it. The pin records the framework commit used at sync time. Rerun the sync after that commit contains `standards/cursor` if a later checkout must reproduce the same files from the pin alone.
+
+## Optional capabilities
+
+The catalogue is App Framework's `REUSABLE_PATTERNS_CATALOGUE.md`. This repository does not keep a copy. Read it when a product needs something this starter does not include. Install only a package that has a registry release. A future setup wizard may record those choices. It is not implemented.
+
+`@app-framework/ui` exists in App Framework and is unpublished. It is not installed here. Databases, identity, payments, realtime behaviour, observability, and web serving are not part of this starter.
