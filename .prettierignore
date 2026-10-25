@@ -1,0 +1,5 @@
+.next
+out
+coverage
+pnpm-lock.yaml
+.github/workflows/

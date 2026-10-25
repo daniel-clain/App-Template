@@ -1,0 +1,17 @@
+---
+description: Architectural boundaries for the App-Template starter
+alwaysApply: true
+---
+
+# Architecture
+
+This repository is a Next.js application starter. App-Framework owns reusable packages and the capability catalogue. Do not reimplement those packages here.
+
+- Application routes, styling, and configuration values stay in this repository.
+- Import `@app-framework/app-config` and `@app-framework/dev-tools` from the package root only.
+- Use published semver ranges. Do not add a `file:` or `git` dependency on App-Framework.
+- Propose a new shared capability in App-Framework instead of copying it into the template.
+- Do not add optional product features, a component library, or a second catalogue without a real requirement.
+- `pnpm check` is the full verification. Pre-commit stays limited to lint-staged.
+
+The ownership split is documented in `docs/RESPONSIBILITIES.md`.
