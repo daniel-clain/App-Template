@@ -5,15 +5,16 @@ alwaysApply: true
 
 # Architecture
 
-This repository is a Next.js application starter. App-Framework owns reusable packages, shared Cursor standards, the reusable static deploy workflow, and the capability catalogue. Do not reimplement those here.
+This repository is a Next.js application starter. App-Framework owns reusable packages, shared Cursor standards, the reusable static deploy workflow, and the capability catalogue. Consume those from their published contract.
 
-- Application routes, styling, and configuration values stay in this repository.
-- Import `@app-framework/app-config` and `@app-framework/dev-tools` from the package root only. Do not add `@app-framework/ui` until a registry release exists.
-- Use published semver ranges. Do not add a `file:` or `git` dependency on App-Framework.
-- Shared coding rules are the pinned copy in `.cursor/rules/framework/`. Do not edit that copy in place. Product rules belong in the generated application's own `.cursor/rules`.
-- Propose a new shared capability in App-Framework instead of copying it into the template.
-- Do not add optional product features, a component library, or a second catalogue without a real requirement.
+- Read `foundation.config.json` for the capabilities this application enables. Leave entries marked `unpublished` or `unavailable` unused.
+- Application routes, styling, and configuration values stay in this repository. Public configuration is loaded in `src/config.ts`.
+- Import `@app-framework/app-config` and `@app-framework/dev-tools` from the package root only. Leave `@app-framework/ui` disabled until a registry release exists.
+- Use published semver ranges. Install them with `pnpm framework:setup` after the registry can resolve them.
+- Shared coding rules are the pinned copy in `.cursor/rules/framework/`. Leave that copy unchanged. Product rules belong in the generated application's own `.cursor/rules`.
+- Propose a new shared capability in App-Framework when a second application needs the same behaviour.
+- Keep optional product features, a component library, and a second catalogue out of this starter.
 - `pnpm check` is the full verification. Pre-commit stays limited to lint-staged.
-- Keep the current deploy workflow until the tag `deploy-static-v1` exists. Do not point this repository at that tag before then.
+- Deployment is the caller in `.github/workflows/deploy.yml`. It references `Clain-Apps/App-Framework/.github/workflows/deploy-static.yml@main` and skips `Clain-Apps/App-Template`.
 
 The ownership split is documented in `docs/RESPONSIBILITIES.md`.

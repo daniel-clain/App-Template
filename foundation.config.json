@@ -1,0 +1,81 @@
+{
+  "identity": {
+    "name": "app-template"
+  },
+  "profile": "next-web",
+  "framework": {
+    "repository": "Clain-Apps/App-Framework",
+    "contract": "docs/consumer-contract.md",
+    "scope": "@app-framework"
+  },
+  "catalogue": {
+    "location": "https://github.com/Clain-Apps/App-Framework/blob/main/REUSABLE_PATTERNS_CATALOGUE.md",
+    "availability": "unavailable",
+    "note": "Proposed and deferred patterns stay in this catalogue. They have no installable package in this file."
+  },
+  "capabilities": {
+    "application-configuration": {
+      "role": "mandatory",
+      "enabled": true,
+      "availability": "unpublished",
+      "source": {
+        "package": "@app-framework/app-config",
+        "version": "^0.1.0",
+        "dependency": "production"
+      },
+      "config": {
+        "module": "src/config.ts"
+      }
+    },
+    "framework-update-checker": {
+      "role": "mandatory",
+      "enabled": true,
+      "availability": "unpublished",
+      "source": {
+        "package": "@app-framework/dev-tools",
+        "version": "^0.1.0",
+        "dependency": "development"
+      }
+    },
+    "development-conventions": {
+      "role": "default",
+      "enabled": true,
+      "availability": "present",
+      "source": {
+        "kind": "standard",
+        "version": "1.0.0",
+        "pin": ".cursor/framework-standards.json"
+      }
+    },
+    "ui": {
+      "role": "optional",
+      "enabled": false,
+      "availability": "unpublished",
+      "source": {
+        "package": "@app-framework/ui",
+        "version": "^0.1.0",
+        "dependency": "production"
+      }
+    },
+    "static-deployment": {
+      "role": "default",
+      "enabled": true,
+      "availability": "referenced",
+      "source": {
+        "kind": "workflow",
+        "repository": "Clain-Apps/App-Framework",
+        "workflow": ".github/workflows/deploy-static.yml",
+        "ref": "main",
+        "stableRef": "deploy-static-v1"
+      },
+      "config": {
+        "nodeVersionFile": ".nvmrc",
+        "installCommand": "pnpm install --frozen-lockfile",
+        "buildCommand": "pnpm check",
+        "outputDirectory": "out",
+        "entryFile": "index.html",
+        "secrets": ["VPS_HOST", "VPS_USER", "VPS_SSH_KEY", "VPS_KNOWN_HOSTS"]
+      }
+    }
+  }
+}

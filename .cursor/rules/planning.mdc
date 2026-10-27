@@ -1,0 +1,14 @@
+---
+description: Inspect enabled framework capabilities before planning application work
+alwaysApply: true
+---
+
+# Plan with the framework
+
+Before designing or implementing application behaviour, read `foundation.config.json`.
+
+- Use a capability when it is enabled and its `availability` is `present`, `referenced`, or its package resolves from the npm registry.
+- Leave a capability unused when `availability` is `unpublished` or `unavailable`.
+- Read `.cursor/rules/framework/` for shared naming, organisation, separation, TypeScript, testing, and maintainability. Leave those files unchanged.
+- Keep product behaviour in this application. When a pattern will be shared, propose it in App-Framework and wait for a published package, a standards version, or a callable workflow.
+- App-Framework's catalogue lists proposed and deferred patterns. Those entries stay unavailable until that repository gives them an installable source.
